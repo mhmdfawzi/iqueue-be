@@ -1,15 +1,39 @@
+const { log } = require("console");
 const ServiceProvider = require("../models/service_provider");
+const SPCategories = require("../models/sp_category");
 
 async function getAll(search, reqPage, reqLimit) {
   let options = {};
   let serviceProviders;
   try {
-    serviceProviders = await ServiceProvider.find();
+    serviceProviders = await ServiceProvider.find()
+      .select("-__v")
+      .populate("category", "-_id -__v")
+      .populate("owner", "-_id -__v -password")
+      .populate("createdBy", "-_id -__v -password");
+
+    // serviceProviders = await ServiceProvider.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: "sp_categories",
+    //       localField: "categoryId", // field in the orders collection
+    //       foreignField: "_id", // field in the items collection
+    //       as: "category",
+    //     },
+    //   },
+    //   {
+    //     $unwind: '$category',
+    //   },
+    // ]);
     if (serviceProviders == null) {
-      return { success: false, message: "Cannot find catchphrases" };
+      return { success: false, message: "Cannot find service providers" };
     }
   } catch (err) {
-    return { success: false, message: "Catchphrases not found" };
+    return {
+      success: false,
+      message: "Service providers not found",
+      error: err.message,
+    };
   }
 
   return {
@@ -21,12 +45,20 @@ async function getAll(search, reqPage, reqLimit) {
 async function getById(id) {
   let serviceProvider;
   try {
-    serviceProvider = await ServiceProvider.findById(id);
+    serviceProvider = await ServiceProvider.findById(id)
+      .select("-__v")
+      .populate("category", "-_id -__v")
+      .populate("owner", "-_id -__v -password")
+      .populate("createdBy", "-_id -__v -password");
     if (serviceProvider == null) {
       return { success: false, message: "Cannot find service provider" };
     }
   } catch (err) {
-    return { success: false, message: err.message };
+    return {
+      success: false,
+      message: "Service providers not found",
+      error: err.message,
+    };
   }
 
   return {
@@ -45,7 +77,11 @@ async function add(body) {
       data: newServiceProvider,
     };
   } catch (err) {
-    return { success: false, message: "Failed to add service provider" };
+    return {
+      success: false,
+      message: "Failed to add service provider",
+      error: err.message,
+    };
   }
 }
 
@@ -67,18 +103,18 @@ async function update(id, name = null, phone = null, long = null, lat = null) {
       serviceProvider.long = long;
     }
 
-    try {
-      const updatedServiceProvider = await serviceProvider.save();
-      return {
-        success: true,
-        data: updatedServiceProvider,
-        message: "Service provider updated successfully",
-      };
-    } catch (err) {
-      return { sucess: false, message: "Failed to update service provider" };
-    }
+    const updatedServiceProvider = await serviceProvider.save();
+    return {
+      success: true,
+      data: updatedServiceProvider,
+      message: "Service provider updated successfully",
+    };
   } catch (err) {
-    return { success: false, message: err.message };
+    return {
+      success: false,
+      message: "Failed to update service provider",
+      error: err.message,
+    };
   }
 }
 
@@ -90,17 +126,17 @@ async function remove(id) {
       return { success: false, message: "Cannot find service provider" };
     }
 
-    try {
-      await serviceProvider.remove();
-      return {
-        success: true,
-        message: "Deleted service provider",
-      };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
+    await serviceProvider.remove();
+    return {
+      success: true,
+      message: "Deleted service provider",
+    };
   } catch (err) {
-    return { success: false, message: err.message };
+    return {
+      success: false,
+      message: "Failed to delete service provider",
+      error: err.message,
+    }
   }
 }
 

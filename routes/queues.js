@@ -1,4 +1,3 @@
-const { json } = require("body-parser");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -9,29 +8,21 @@ let {
   add,
   update,
   remove,
-} = require("../controllers/serviceProviderController");
+} = require("../controllers/queueController");
 
 /**
  * @swagger
- * tags:
- *  - name: Auth
- *  - name: Categories
- *  - name: Service Providers
- *  - name: Queues
- *  - name: Reservations
- * /api/serviceProviders:
+ * /api/queues:
  *   get:
- *     description: All service providers
+ *     description: All queues
  *     tags:
- *      - Service Providers
+ *      - Queues
  *     responses:
  *       200:
- *         description: Returns all the service providers
+ *         description: Returns all the queues
  */
 router.get("/", async (req, res) => {
   let response = await getAll(req.query.s, req.query.page, req.query.limit);
-  console.log("swagger: ", response);
-  console.log("parse: ", response.data);
 
   if (response.success == true) {
     res.status(200).json(response);
@@ -42,20 +33,20 @@ router.get("/", async (req, res) => {
 
 /**
  * @swagger
- * /api/serviceProviders/{id}:
+ * /api/queues/{id}:
  *   get:
  *     parameters:
  *      - in: path
  *        name: id
  *        required: true
  *        type: string
- *        description: The service provider ID.
- *     description: Get a service provider by id
+ *        description: The queue ID.
+ *     description: Get a queue by id
  *     tags:
- *      - Service Providers
+ *      - Queues
  *     responses:
  *       200:
- *         description: Returns the requested service provider
+ *         description: Returns the requested queue
  */
 router.get("/:id", async (req, res) => {
   let response = await getById(req.params.id);
@@ -64,33 +55,25 @@ router.get("/:id", async (req, res) => {
 
 /**
  * @swagger
- * /api/serviceProviders:
+ * /api/queues:
  *   post:
  *     parameters:
  *      - in: body
- *        name: service provider 
- *        description: New service provider
+ *        name: queue
+ *        description: New queue
  *        schema:
  *          type: object
  *          properties:
  *            name:
  *              type: string
- *            owner:
+ *            serviceProvider:
  *              type: string
- *            category:
+ *            manager:
  *              type: string
- *            long:
- *              type: number
- *            lat:
- *              type: number
  *            createdBy:
  *              type: string
- *            address:
- *              type: string
- *            phone:
- *              type: string
  *     tags:
- *      - Service Providers
+ *      - Queues
  *     responses:
  *       201:
  *         description: Created
@@ -99,13 +82,9 @@ router.post("/", async (req, res) => {
   try {
     let body = {
       name: req.body.name,
-      owner: mongoose.Types.ObjectId(req.body.owner),
-      category: mongoose.Types.ObjectId(req.body.category),
-      long: req.body.long,
-      lat: req.body.lat,
-      createdBy: mongoose.Types.ObjectId(req.body.createdBy),
-      address: req.body.address,
-      phone: req.body.phone,
+      serviceProvider: mongoose.Types.ObjectId(req.body.serviceProvider),
+      manager: mongoose.Types.ObjectId(req.body.manager),
+      createdBy: req.body.createdBy,
     };
     let response = await add(body);
 
@@ -121,60 +100,64 @@ router.post("/", async (req, res) => {
 
 /**
  * @swagger
- * /api/serviceProviders/{id}:
+ * /api/queues/{id}:
  *   put:
  *     parameters:
  *      - in: path
  *        name: id
  *        required: true
  *        type: string
- *        description: The service provider ID.
+ *        description: The queue ID.
  *      - in: body
- *        name: service provider
- *        description: Update service provider
+ *        name: queue
+ *        description: Update queue
  *        schema:
  *          type: object
  *          properties:
+ *            manager:
+ *              type: string
+ *            bookCount:
+ *              type: number
+ *            nowServing:
+ *              type: number
+ *            nextServing:
+ *              type: number
  *            name:
  *              type: string
- *            ownerId:
- *              type: string
- *            categoryId:
- *              type: string
- *            long:
- *              type: number
- *            lat:
- *              type: number
- *            createdBy:
- *              type: string
- *            address:
- *              type: string
- *            phone:
- *              type: string
  *     tags:
- *      - Service Providers
+ *      - Queues
  *     responses:
  *       201:
  *         description: Created
  */
 router.put("/:id", async (req, res) => {
   let name,
-    phone,
-    long,
-    lat = null;
+    manager,
+    bookCount,
+    nextServing,
+    nowServing = null;
   if (req.body.name) {
     name = req.body.name;
   }
-  if (req.body.phone) {
-    phone = req.body.phone;
+  if (req.body.manager) {
+    manager = req.body.manager;
   }
-  if (req.body.long) {
-    long = req.body.long;
+  if (req.body.bookCount) {
+    bookCount = req.body.bookCount;
   }
-  if (req.body.lat) {
-    lat = req.body.lat;
+  if (req.body.nextServing) {
+    nextServing = req.body.nextServing;
   }
-  let response = await update(req.params.id, name, phone, long, lat);
+  if (req.body.nowServing) {
+    nowServing = req.body.nowServing;
+  }
+  let response = await update(
+    req.params.id,
+    manager,
+    bookCount,
+    nowServing,
+    nextServing
+  );
 
   if (response.success == true) {
     res.status(201).json(response);
@@ -185,20 +168,20 @@ router.put("/:id", async (req, res) => {
 
 /**
  * @swagger
- * /api/serviceProviders/{id}:
+ * /api/queues/{id}:
  *   delete:
  *     parameters:
  *      - in: path
  *        name: id
  *        required: true
  *        type: string
- *        description: The service provider ID.
- *     description: Delete a service provider by id
+ *        description: The queue ID.
+ *     description: Delete a queue by id
  *     tags:
- *      - Service Providers
+ *      - Queues
  *     responses:
  *       200:
- *         description: Returns the requested service provider
+ *         description: Returns the requested queue
  */
 router.delete("/:id", async (req, res) => {
   let response = await remove(req.params.id);

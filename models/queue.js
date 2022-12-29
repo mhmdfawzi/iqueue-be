@@ -1,29 +1,21 @@
-const { ObjectID } = require("bson");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const serviceProviderSchema = new Schema({
+const queueSchema = new Schema({
   name: {
     type: String,
     lowercase: true,
     required: true,
-    unique: true,
   },
-  category: {
+  serviceProvider: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "sp_category",
+    ref: "service_provider",
     required: true,
   },
-  owner: {
+  manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
     required: true,
-  },
-  long: {
-    type: Number,
-  },
-  lat: {
-    type: Number,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -34,24 +26,20 @@ const serviceProviderSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  address: {
+  nowServing: {
     type: String,
-    required: true,
+    default: 0,
   },
-  phone: {
+  nextServing: {
     type: String,
-    required: true,
-    unique: true,
+    default: 0,
   },
-  queueCount: {
+  bookCount: {
     type: Number,
     hidden: true,
   },
 });
 
-const ServiceProvider = mongoose.model(
-  "service_provider",
-  serviceProviderSchema
-);
+const Queue = mongoose.model("queue", queueSchema);
 
-module.exports = ServiceProvider;
+module.exports = Queue;

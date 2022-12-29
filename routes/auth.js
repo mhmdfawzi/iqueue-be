@@ -21,6 +21,8 @@ const jwtSecret =
  *              type: string
  *            password:
  *              type: string
+ *     tags:
+ *      - Auth
  *     responses:
  *       201:
  *         description: Created
@@ -61,6 +63,8 @@ router.post("/register", async (req, res) => {
  *              type: string
  *            password:
  *              type: string
+ *     tags:
+ *      - Auth
  *     responses:
  *       201:
  *         description: Created
