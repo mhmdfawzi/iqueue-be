@@ -5,6 +5,7 @@ async function getAll(search, reqPage, reqLimit) {
   let reservations;
   try {
     reservations = await Reservation.find()
+      // .where(x=>x.reserver == "")
       .select("-__v")
       .populate("queue", "-_id -__v")
       .populate("reserver", "-_id -__v -password");

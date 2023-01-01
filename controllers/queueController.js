@@ -1,10 +1,9 @@
-const { log } = require("console");
 const Queue = require("../models/queue");
 
-async function getAll(search, reqPage, reqLimit) {
+async function getAll(serviceProviderID) {
   let queues;
   try {
-    queues = await Queue.find()
+    queues = await Queue.find({ serviceProvider: serviceProviderID })
       .select("-__v")
       .populate("serviceProvider", "-_id -__v")
       .populate("manager", "-_id -__v -password")

@@ -12,8 +12,14 @@ let {
 
 /**
  * @swagger
- * /api/queues:
+ * /api/queues/{serviceProviderID}:
  *   get:
+ *     parameters:
+ *      - in: path
+ *        name: serviceProviderID
+ *        required: true
+ *        type: string
+ *        description: The service provider ID. 
  *     description: All queues
  *     tags:
  *      - Queues
@@ -21,8 +27,8 @@ let {
  *       200:
  *         description: Returns all the queues
  */
-router.get("/", async (req, res) => {
-  let response = await getAll(req.query.s, req.query.page, req.query.limit);
+router.get("/:serviceProviderID", async (req, res) => {
+  let response = await getAll(req.params.serviceProviderID);
 
   if (response.success == true) {
     res.status(200).json(response);
