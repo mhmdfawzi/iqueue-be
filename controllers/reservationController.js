@@ -1,11 +1,10 @@
 const { log } = require("console");
 const Reservation = require("../models/reservation");
 
-async function getAll(search, reqPage, reqLimit) {
+async function getAll(queueID) {
   let reservations;
   try {
-    reservations = await Reservation.find()
-      // .where(x=>x.reserver == "")
+    reservations = await Reservation.find({ queue: queueID })
       .select("-__v")
       .populate("queue", "-_id -__v")
       .populate("reserver", "-_id -__v -password");
@@ -29,12 +28,14 @@ async function getAll(search, reqPage, reqLimit) {
 async function getById(id) {
   let reservation;
   try {
-    reservation = await Reservation.findById(id)
+    reservation = await Reservation.find({ _id: id })
       .select("-__v")
-      .populate("serviceProvider", "-_id -__v")
       .populate("queue", "-_id -__v")
       .populate("reserver", "-_id -__v -password");
-    if (reservation == null) {
+
+    console.log("reservation : ", reservation);
+
+    if (reservation.length == 0) {
       return { success: false, message: "Cannot find reservation" };
     }
   } catch (err) {
@@ -47,12 +48,19 @@ async function getById(id) {
 
   return {
     success: true,
-    data: reservation,
+    data: reservation[0],
   };
 }
 
 async function add(body) {
+  const queueReservations = await Reservation.find({ queue: body.queue })
+    .sort({ _id: -1 })
+    .limit(1);
+
   const reservation = new Reservation(body);
+  queueReservations.length == 1
+    ? (reservation.no = queueReservations[0].no + 1)
+    : (reservation.no = 1);
 
   try {
     const newReservation = await reservation.save();

@@ -11,8 +11,14 @@ let {
 
 /**
  * @swagger
- * /api/reservations:
+ * /api/reservations/queue/{queueID}:
  *   get:
+ *     parameters:
+ *      - in: path
+ *        name: queueID
+ *        required: true
+ *        type: string
+ *        description: The queue ID.
  *     description: All reservations
  *     tags:
  *      - Reservations
@@ -20,8 +26,9 @@ let {
  *       200:
  *         description: Returns all the reservations
  */
-router.get("/", async (req, res) => {
-  let response = await getAll(req.query.s, req.query.page, req.query.limit);
+router.get("/queue/:queueID", async (req, res) => {
+  console.log("=== all === ")
+  let response = await getAll(req.params.queueID);
 
   if (response.success == true) {
     res.status(200).json(response);
@@ -48,8 +55,13 @@ router.get("/", async (req, res) => {
  *         description: Returns the requested reservation
  */
 router.get("/:id", async (req, res) => {
+
   let response = await getById(req.params.id);
-  res.json(response);
+  if (response.success == true) {
+    res.status(201).json(response);
+  } else {
+    res.status(404).json(response);
+  }
 });
 
 /**
@@ -77,7 +89,7 @@ router.post("/", async (req, res) => {
   try {
     let body = {
       reserver: req.body.reserver,
-      queue: queue,
+      queue: req.body.queue,
     };
     let response = await add(body);
 
