@@ -4,7 +4,7 @@ require("dotenv").config();
 const connectDB = async () => {
   try {
     mongoose.set('strictQuery', false);
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const conn = await mongoose.connect("mongodb+srv://fawzyDBA:sSf2arswcUJEEiOG@cluster0.z0xh7fp.mongodb.net/?retryWrites=true&w=majority", {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
       // useFindAndModify: false,
