@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-let { register, login } = require("../controllers/authController");
+let { register, login, getManagers,getOwners } = require("../controllers/authController");
 const jwt = require("jsonwebtoken");
 const jwtSecret =
   "18347a325e7b767719fcb28574db935d064bc9f2fcff42c7d31143c94c67bb571d1cfd";
@@ -13,7 +13,7 @@ const jwtSecret =
  *     parameters:
  *      - in: body
  *        name: user
- *        description: New user
+ *        description: New user, roles should be one of ['manager','owner','admin','basic']
  *        schema:
  *          type: object
  *          properties:
@@ -21,6 +21,18 @@ const jwtSecret =
  *              type: string
  *            password:
  *              type: string
+ *            serviceProvider:
+ *              type: string
+ *              required: false
+ *              default: null
+ *            queue:
+ *              type: string
+ *              required: false
+ *              default: null
+ *            role:
+ *              type: string
+ *              required: true
+ *              default: basic
  *     tags:
  *      - Auth
  *     responses:
@@ -90,6 +102,52 @@ router.post("/login", async (req, res) => {
       response.data.role,
       res
     );
+    res.status(200).json(response);
+  } else {
+    res.status(401).json(response);
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/owners:
+ *   get:
+ *     tags:
+ *      - Auth
+ *     responses:
+ *       200:
+ *         description: Get all the owners
+ */
+router.get("/owners", async (req, res) => {
+  let response = await getOwners();
+
+  if (response.success == true) {
+    res.status(200).json(response);
+  } else {
+    res.status(401).json(response);
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/managers/{serviceProviderID}:
+ *   get:
+ *     parameters:
+ *      - in: path
+ *        name: serviceProviderID
+ *        required: true
+ *        type: string
+ *        description: The service provider ID.
+ *     tags:
+ *      - Auth
+ *     responses:
+ *       200:
+ *         description: Get all the managers
+ */
+router.get("/managers/:serviceProviderID", async (req, res) => {
+  let response = await getManagers(req.params.serviceProviderID);
+
+  if (response.success == true) {
     res.status(200).json(response);
   } else {
     res.status(401).json(response);

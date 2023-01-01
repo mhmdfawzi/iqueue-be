@@ -30,8 +30,6 @@ let {
  */
 router.get("/", async (req, res) => {
   let response = await getAll(req.query.s, req.query.page, req.query.limit);
-  console.log("swagger: ", response);
-  console.log("parse: ", response.data);
 
   if (response.success == true) {
     res.status(200).json(response);

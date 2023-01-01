@@ -1,7 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 
-
 async function register(body, res, next) {
   if (body.password.length < 6) {
     return { success: false, message: "password should be greater than 6" };
@@ -57,7 +56,53 @@ async function login(body, res, next) {
   }
 }
 
+async function getOwners() {
+  try {
+    let users = await User.find({
+      role: "owner"
+    });
+    if (users.length) {
+      return { success: true, data: users };
+    } else {
+      return {
+        success: false,
+        message: "No owners found",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "No data found",
+      error: error.message,
+    };
+  }
+}
+async function getManagers(serviceProviderID) {
+  try {
+    let users = await User.find({
+      role: "manager",
+      serviceProvider: serviceProviderID,
+    });
+    if (users.length) {
+      return { success: true, data: users };
+    } else {
+      return {
+        success: false,
+        message: "No managers for this service provider",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "No data found",
+      error: error.message,
+    };
+  }
+}
+
 module.exports = {
   register,
   login,
+  getManagers,
+  getOwners
 };
