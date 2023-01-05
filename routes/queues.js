@@ -15,6 +15,7 @@ let {
  * @swagger
  * /api/queues/serviceProvider/{serviceProviderID}:
  *   get:
+ *     summary: Get all queues for specific service provider by its ID
  *     parameters:
  *      - in: path
  *        name: serviceProviderID
@@ -42,6 +43,7 @@ router.get("/serviceProvider/:serviceProviderID", async (req, res) => {
  * @swagger
  * /api/queues/{id}:
  *   get:
+ *     summary: Get queue by ID
  *     parameters:
  *      - in: path
  *        name: id
@@ -64,6 +66,7 @@ router.get("/:id", async (req, res) => {
  * @swagger
  * /api/queues:
  *   post:
+ *     summary: add a new queue for the service provider
  *     parameters:
  *      - in: body
  *        name: queue
@@ -109,6 +112,7 @@ router.post("/", async (req, res) => {
  * @swagger
  * /api/queues/{id}:
  *   put:
+ *     summary: Update the queue information
  *     parameters:
  *      - in: path
  *        name: id
@@ -177,6 +181,7 @@ router.put("/:id", async (req, res) => {
  * @swagger
  * /api/queues/moveNext/{id}:
  *   put:
+ *     summary: Move the queue to the next reservation
  *     parameters:
  *      - in: path
  *        name: id
@@ -208,6 +213,7 @@ router.put("/moveNext/:id", async (req, res) => {
  * @swagger
  * /api/queues/{id}:
  *   delete:
+ *     summary: Delete a queue from the system
  *     parameters:
  *      - in: path
  *        name: id

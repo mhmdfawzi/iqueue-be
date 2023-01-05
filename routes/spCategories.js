@@ -12,6 +12,7 @@ let {
  * @swagger
  * /api/spCategories:
  *   get:
+ *     summary: Get all service provider categories
  *     description: All sp categories
  *     tags:
  *      - Categories
@@ -39,6 +40,7 @@ router.get("/", async (req, res) => {
  *        type: string
  *        description: The sp category ID.
  *     description: Get a sp category by id
+ *     summary: Get a category by ID
  *     tags:
  *      - Categories
  *     responses:
@@ -54,6 +56,7 @@ router.get("/:id", async (req, res) => {
  * @swagger
  * /api/spCategories:
  *   post:
+ *     summary: Add new service category
  *     parameters:
  *      - in: body
  *        name: sp category
@@ -86,6 +89,7 @@ router.post("/", async (req, res) => {
  * @swagger
  * /api/spCategories/{id}:
  *   put:
+ *     summary: Update a category by ID
  *     parameters:
  *      - in: path
  *        name: id
@@ -124,6 +128,7 @@ router.put("/:id", async (req, res) => {
  * @swagger
  * /api/spCategories/{id}:
  *   delete:
+ *     summary: Delete a category by ID
  *     parameters:
  *      - in: path
  *        name: id

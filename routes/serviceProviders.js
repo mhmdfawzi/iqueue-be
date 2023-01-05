@@ -21,6 +21,7 @@ let {
  *  - name: Reservations
  * /api/serviceProviders:
  *   get:
+ *     summary: Get all the service providers in system
  *     description: All service providers
  *     tags:
  *      - Service Providers
@@ -42,6 +43,7 @@ router.get("/", async (req, res) => {
  * @swagger
  * /api/serviceProviders/{id}:
  *   get:
+ *     summary: Get specific service provider by ID
  *     parameters:
  *      - in: path
  *        name: id
@@ -64,6 +66,7 @@ router.get("/:id", async (req, res) => {
  * @swagger
  * /api/serviceProviders:
  *   post:
+ *     summary: Add new service provider
  *     parameters:
  *      - in: body
  *        name: service provider 
@@ -121,6 +124,7 @@ router.post("/", async (req, res) => {
  * @swagger
  * /api/serviceProviders/{id}:
  *   put:
+ *     summary: Update service provider information
  *     parameters:
  *      - in: path
  *        name: id
@@ -185,6 +189,7 @@ router.put("/:id", async (req, res) => {
  * @swagger
  * /api/serviceProviders/{id}:
  *   delete:
+ *     summary: Delete service provider by ID
  *     parameters:
  *      - in: path
  *        name: id

@@ -10,6 +10,7 @@ const jwtSecret =
  * @swagger
  * /api/auth/register:
  *   post:
+ *     summary: Add new user to the system
  *     parameters:
  *      - in: body
  *        name: user
@@ -64,6 +65,7 @@ router.post("/register", async (req, res) => {
  * @swagger
  * /api/auth/login:
  *   post:
+ *     summary: Login to the system
  *     parameters:
  *      - in: body
  *        name: user
@@ -112,6 +114,7 @@ router.post("/login", async (req, res) => {
  * @swagger
  * /api/auth/owners:
  *   get:
+ *     summary: Get all users with owner privilge in the system
  *     tags:
  *      - Auth
  *     responses:
@@ -132,6 +135,7 @@ router.get("/owners", async (req, res) => {
  * @swagger
  * /api/auth/managers/{serviceProviderID}:
  *   get:
+ *     summary: Get all managers in the service providers
  *     parameters:
  *      - in: path
  *        name: serviceProviderID

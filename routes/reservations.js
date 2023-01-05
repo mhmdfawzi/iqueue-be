@@ -13,6 +13,7 @@ let {
  * @swagger
  * /api/reservations/queue/{queueID}:
  *   get:
+ *     summary: Get all reservations for specific queue by the queue ID
  *     parameters:
  *      - in: path
  *        name: queueID
@@ -41,6 +42,7 @@ router.get("/queue/:queueID", async (req, res) => {
  * @swagger
  * /api/reservations/{id}:
  *   get:
+ *     summary: Get specific reservation by ID
  *     parameters:
  *      - in: path
  *        name: id
@@ -68,6 +70,7 @@ router.get("/:id", async (req, res) => {
  * @swagger
  * /api/reservations:
  *   post:
+ *     summary: Create a reservation in a Queue
  *     parameters:
  *      - in: body
  *        name: reservation
@@ -107,6 +110,7 @@ router.post("/", async (req, res) => {
  * @swagger
  * /api/reservations/{id}:
  *   delete:
+ *     summary: Cancel a reservation
  *     parameters:
  *      - in: path
  *        name: id
