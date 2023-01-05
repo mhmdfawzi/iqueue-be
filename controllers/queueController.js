@@ -28,6 +28,7 @@ async function getAll(serviceProviderID) {
 async function getById(id) {
   let queue;
   try {
+    console.log("get queue by id")
     queue = await Queue.findById(id)
       .select("-__v")
       .populate("serviceProvider", "-_id -__v")
@@ -113,6 +114,32 @@ async function update(
   }
 }
 
+async function moveNext(id) {
+  let queue;
+  try {
+    queue = await Queue.findById(id);
+    if (queue == null) {
+      return { success: false, message: "Cannot find queue" };
+    }
+
+    queue.nowServing += 1;
+    queue.nextServing += 1;
+
+    const updatedQueue = await queue.save();
+    return {
+      success: true,
+      data: updatedQueue,
+      message: "Queue moved to next successfully",
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: "Failed to the queue to next",
+      error: err.message,
+    };
+  }
+}
+
 async function remove(id) {
   let queue;
   try {
@@ -140,5 +167,6 @@ module.exports = {
   getById,
   add,
   update,
+  moveNext,
   remove,
 };

@@ -8,18 +8,19 @@ let {
   add,
   update,
   remove,
+  moveNext,
 } = require("../controllers/queueController");
 
 /**
  * @swagger
- * /api/queues/{serviceProviderID}:
+ * /api/queues/serviceProvider/{serviceProviderID}:
  *   get:
  *     parameters:
  *      - in: path
  *        name: serviceProviderID
  *        required: true
  *        type: string
- *        description: The service provider ID. 
+ *        description: The service provider ID.
  *     description: All queues
  *     tags:
  *      - Queues
@@ -27,7 +28,7 @@ let {
  *       200:
  *         description: Returns all the queues
  */
-router.get("/:serviceProviderID", async (req, res) => {
+router.get("/serviceProvider/:serviceProviderID", async (req, res) => {
   let response = await getAll(req.params.serviceProviderID);
 
   if (response.success == true) {
@@ -164,6 +165,37 @@ router.put("/:id", async (req, res) => {
     nowServing,
     nextServing
   );
+
+  if (response.success == true) {
+    res.status(201).json(response);
+  } else {
+    res.status(404).json(response);
+  }
+});
+
+/**
+ * @swagger
+ * /api/queues/moveNext/{id}:
+ *   put:
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        type: string
+ *        description: The queue ID.
+ *      - in: body
+ *        name: queue
+ *        description: move queue to next reservation
+ *        schema:
+ *          type: object
+ *     tags:
+ *      - Queues
+ *     responses:
+ *       200:
+ *         description: moved
+ */
+router.put("/moveNext/:id", async (req, res) => {
+  let response = await moveNext(req.params.id);
 
   if (response.success == true) {
     res.status(201).json(response);

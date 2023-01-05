@@ -1,4 +1,5 @@
 const { log } = require("console");
+const Queue = require("../models/queue");
 const Reservation = require("../models/reservation");
 
 async function getAll(queueID) {
@@ -57,6 +58,9 @@ async function add(body) {
     .sort({ _id: -1 })
     .limit(1);
 
+  const queue = await Queue.findById(body.queue);
+  queue.bookCount += 1;
+  await queue.save();
   const reservation = new Reservation(body);
   queueReservations.length == 1
     ? (reservation.no = queueReservations[0].no + 1)

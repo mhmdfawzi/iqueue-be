@@ -27,11 +27,11 @@ const queueSchema = new Schema({
     default: Date.now(),
   },
   nowServing: {
-    type: String,
+    type: Number,
     default: 0,
   },
   nextServing: {
-    type: String,
+    type: Number,
     default: 0,
   },
   bookCount: {
