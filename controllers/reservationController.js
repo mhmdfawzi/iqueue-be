@@ -59,7 +59,12 @@ async function add(body) {
     .limit(1);
 
   const queue = await Queue.findById(body.queue);
+  if (queue.bookCount == 0) {
+    queue.nowServing = 1;
+    queue.nextServing = 2;
+  }
   queue.bookCount += 1;
+
   await queue.save();
   const reservation = new Reservation(body);
   queueReservations.length == 1

@@ -36,6 +36,7 @@ const queueSchema = new Schema({
   },
   bookCount: {
     type: Number,
+    default: 0,
   },
 });
 
