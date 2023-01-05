@@ -122,6 +122,13 @@ async function moveNext(id) {
       return { success: false, message: "Cannot find queue" };
     }
 
+    if(queue.bookCount === queue.nextServing){
+      return {
+        success: false,
+        message: "Couldn't move next as there is no reservations right now!",
+      };
+    }
+
     queue.nowServing += 1;
     queue.nextServing += 1;
 

@@ -6,25 +6,25 @@ async function getAll(search, reqPage, reqLimit) {
   let options = {};
   let serviceProviders;
   try {
-    serviceProviders = await ServiceProvider.find()
-      .select("-__v")
-      .populate("category", "-_id -__v")
-      .populate("owner", "-_id -__v -password")
-      .populate("createdBy", "-_id -__v -password");
+    // serviceProviders = await ServiceProvider.find()
+    //   .select("-__v")
+    //   .populate("category", "-_id -__v")
+    //   .populate("owner", "-_id -__v -password")
+    //   .populate("createdBy", "-_id -__v -password");
 
-    // serviceProviders = await ServiceProvider.aggregate([
-    //   {
-    //     $lookup: {
-    //       from: "sp_categories",
-    //       localField: "categoryId", // field in the orders collection
-    //       foreignField: "_id", // field in the items collection
-    //       as: "category",
-    //     },
-    //   },
-    //   {
-    //     $unwind: '$category',
-    //   },
-    // ]);
+    serviceProviders = await ServiceProvider.aggregate([
+      {
+        $lookup: {
+          from: "queues",
+          localField: "_id",
+          foreignField: "serviceProvider",
+          as: "queues",
+        },
+      },
+      {
+        $unwind: "$queues",
+      }
+    ]);
     if (serviceProviders == null) {
       return { success: false, message: "Cannot find service providers" };
     }
@@ -136,7 +136,7 @@ async function remove(id) {
       success: false,
       message: "Failed to delete service provider",
       error: err.message,
-    }
+    };
   }
 }
 
